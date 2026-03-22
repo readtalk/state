@@ -20,13 +20,29 @@
 			if (userId) localStorage.setItem('readtalk_user_id', userId);
 			if (email) localStorage.setItem('readtalk_email', email);
 			
-			// TAMPILIN DI HALAMAN
+			// TAMPILIN DI HEADER SEBELAH KANAN (hanya jika ada parameter)
 			if (userId || email) {
-				document.write(`
-					<div style="background:#4caf50; color:white; padding:10px; text-align:center; margin-bottom:10px;">
-						userId: ${userId} | email: ${email}
-					</div>
-				`);
+				document.addEventListener('DOMContentLoaded', function() {
+					const headerRow = document.querySelector('.container .row');
+					if (headerRow) {
+						const userInfoDiv = document.createElement('div');
+						userInfoDiv.className = 'two-thirds column';
+						userInfoDiv.style.textAlign = 'right';
+						userInfoDiv.style.marginTop = '2%';
+						userInfoDiv.innerHTML = `
+							<span style="background:#f0f0f0; padding:5px 10px; border-radius:5px; font-size:12px;">
+								${userId.slice(0,8)}... | ${email.split('@')[0]}
+							</span>
+						`;
+						
+						const existingTwoThirds = headerRow.querySelector('.two-thirds.column:not(#root)');
+						if (existingTwoThirds) {
+							existingTwoThirds.replaceWith(userInfoDiv);
+						} else {
+							headerRow.appendChild(userInfoDiv);
+						}
+					}
+				});
 			}
 			
 			if ((userId || email) && window.location.search !== '') {
