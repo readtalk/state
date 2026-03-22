@@ -1,74 +1,70 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<meta charset="utf-8" />
 		<title>Blackberry - State</title>
 		<meta name="description" content="" />
 		<meta name="author" content="" />
+
+		<!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
+		<!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+		<!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<link rel="stylesheet" href="css/normalize.css" />
 		<link rel="stylesheet" href="css/skeleton.css" />
 		<link rel="stylesheet" href="styles.css" />
+
+		<!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<link rel="icon" type="image/ico" href="favicon.ico" />
 		
+		<!-- Handle URL params: extract userId & email and save to localStorage -->
 		<script>
-			const urlParams = new URLSearchParams(window.location.search);
-			const userId = urlParams.get('userId') || '';
-			const email = urlParams.get('email') || '';
-			
-			if (userId) localStorage.setItem('readtalk_user_id', userId);
-			if (email) localStorage.setItem('readtalk_email', email);
-			
-			// Tampilkan userId & email di dalam one-third column (sejajar dengan merek)
-			if (userId || email) {
-				document.addEventListener('DOMContentLoaded', function() {
-					const oneThirdColumn = document.querySelector('.one-third.column');
-					if (oneThirdColumn) {
-						// Buat wrapper flex biar isinya sejajar
-						oneThirdColumn.style.display = 'flex';
-						oneThirdColumn.style.justifyContent = 'space-between';
-						oneThirdColumn.style.alignItems = 'center';
-						
-						// Ambil konten yang sudah ada (h4 dan p)
-						const existingContent = oneThirdColumn.innerHTML;
-						
-						// Tambahin user info di sebelah kanan
-						const userInfo = `
-							<div style="text-align: right;">
-								<span style="background:#f0f0f0; padding:5px 10px; border-radius:5px; font-size:12px;">
-									${userId ? userId.slice(0,8)+'...' : ''} ${userId && email ? '|' : ''} ${email ? email.split('@')[0] : ''}
-								</span>
-							</div>
-						`;
-						
-						oneThirdColumn.innerHTML = `
-							<div>
-								<h4 style="margin-bottom:0;"><b>Black</b>Berry</h4>
-								<p style="margin-bottom:0;">Online State</p>
-							</div>
-							${userInfo}
-						`;
-					}
-				});
-			}
-			
-			if ((userId || email) && window.location.search !== '') {
-				window.history.replaceState({}, document.title, window.location.pathname);
-			}
+			(function() {
+				const urlParams = new URLSearchParams(window.location.search);
+				const userId = urlParams.get('userId') || '';
+				const email = urlParams.get('email') || '';
+				
+				if (userId) {
+					localStorage.setItem('readtalk_user_id', userId);
+				}
+				if (email) {
+					localStorage.setItem('readtalk_email', email);
+				}
+				
+				// Clean URL by removing query params after saving
+				if ((userId || email) && window.location.search !== '') {
+					const cleanUrl = window.location.pathname;
+					window.history.replaceState({}, document.title, cleanUrl);
+				}
+			})();
 		</script>
 		
 		<script src="/dist/index.js" type="module"></script>
 	</head>
 	<body>
+		<!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<div class="container" style="width: 95%; height: 100%">
 			<div class="row" style="height: 100%">
 				<div class="one-third column" style="margin-top: 2%">
 					<h4><b>Black</b>Berry</h4>
-					<p>Online State</p>
+					<p>
+						Online State
+					</p>
 				</div>
 				<div class="two-thirds column" id="root"></div>
 			</div>
 		</div>
+
+		<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	</body>
 </html>
