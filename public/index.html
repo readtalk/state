@@ -1,45 +1,59 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<meta charset="utf-8" />
 		<title>Blackberry - State</title>
 		<meta name="description" content="" />
 		<meta name="author" content="" />
-
-		<!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-
-		<!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<link rel="stylesheet" href="css/normalize.css" />
 		<link rel="stylesheet" href="css/skeleton.css" />
 		<link rel="stylesheet" href="styles.css" />
-
-		<!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<link rel="icon" type="image/ico" href="favicon.ico" />
 		
-		<!-- Handle URL params: extract userId & email and save to localStorage -->
 		<script>
 			(function() {
+				// Baca parameter dari URL
 				const urlParams = new URLSearchParams(window.location.search);
 				const userId = urlParams.get('userId') || '';
 				const email = urlParams.get('email') || '';
 				
-				if (userId) {
-					localStorage.setItem('readtalk_user_id', userId);
-				}
-				if (email) {
-					localStorage.setItem('readtalk_email', email);
+				// Simpan ke localStorage
+				if (userId) localStorage.setItem('readtalk_user_id', userId);
+				if (email) localStorage.setItem('readtalk_email', email);
+				
+				// TAMPILKAN DI HALAMAN - biar keliatan berhasil
+				if (userId || email) {
+					const displayDiv = document.createElement('div');
+					displayDiv.style.backgroundColor = '#e8f5e9';
+					displayDiv.style.border = '1px solid #4caf50';
+					displayDiv.style.borderRadius = '8px';
+					displayDiv.style.padding = '12px';
+					displayDiv.style.marginBottom = '20px';
+					displayDiv.style.fontSize = '14px';
+					displayDiv.innerHTML = `
+						<strong>✅ Parameter berhasil ditangkap index.html:</strong><br/>
+						📌 User ID: <strong>${userId || '(kosong)'}</strong><br/>
+						📧 Email: <strong>${email || '(kosong)'}</strong><br/>
+						💾 Tersimpan di localStorage: readtalk_user_id & readtalk_email
+					`;
+					
+					// Taruh di atas root
+					const root = document.getElementById('root');
+					const container = document.querySelector('.container');
+					if (container && root) {
+						container.insertBefore(displayDiv, root);
+					}
+					
+					// Hilangin setelah 5 detik biar gak ganggu (opsional)
+					setTimeout(() => {
+						displayDiv.style.opacity = '0';
+						setTimeout(() => displayDiv.remove(), 500);
+					}, 5000);
 				}
 				
-				// Clean URL by removing query params after saving
+				// Bersihin URL
 				if ((userId || email) && window.location.search !== '') {
 					const cleanUrl = window.location.pathname;
 					window.history.replaceState({}, document.title, cleanUrl);
@@ -50,21 +64,14 @@
 		<script src="/dist/index.js" type="module"></script>
 	</head>
 	<body>
-		<!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 		<div class="container" style="width: 95%; height: 100%">
 			<div class="row" style="height: 100%">
 				<div class="one-third column" style="margin-top: 2%">
 					<h4><b>Black</b>Berry</h4>
-					<p>
-						Online State
-					</p>
+					<p>Online State</p>
 				</div>
 				<div class="two-thirds column" id="root"></div>
 			</div>
 		</div>
-
-		<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	</body>
 </html>
