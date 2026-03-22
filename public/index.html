@@ -20,27 +20,35 @@
 			if (userId) localStorage.setItem('readtalk_user_id', userId);
 			if (email) localStorage.setItem('readtalk_email', email);
 			
-			// TAMPILIN DI HEADER SEBELAH KANAN (hanya jika ada parameter)
+			// Tampilkan userId & email di dalam one-third column (sejajar dengan merek)
 			if (userId || email) {
 				document.addEventListener('DOMContentLoaded', function() {
-					const headerRow = document.querySelector('.container .row');
-					if (headerRow) {
-						const userInfoDiv = document.createElement('div');
-						userInfoDiv.className = 'two-thirds column';
-						userInfoDiv.style.textAlign = 'right';
-						userInfoDiv.style.marginTop = '2%';
-						userInfoDiv.innerHTML = `
-							<span style="background:#f0f0f0; padding:5px 10px; border-radius:5px; font-size:12px;">
-								${userId.slice(0,8)}... | ${email.split('@')[0]}
-							</span>
+					const oneThirdColumn = document.querySelector('.one-third.column');
+					if (oneThirdColumn) {
+						// Buat wrapper flex biar isinya sejajar
+						oneThirdColumn.style.display = 'flex';
+						oneThirdColumn.style.justifyContent = 'space-between';
+						oneThirdColumn.style.alignItems = 'center';
+						
+						// Ambil konten yang sudah ada (h4 dan p)
+						const existingContent = oneThirdColumn.innerHTML;
+						
+						// Tambahin user info di sebelah kanan
+						const userInfo = `
+							<div style="text-align: right;">
+								<span style="background:#f0f0f0; padding:5px 10px; border-radius:5px; font-size:12px;">
+									${userId ? userId.slice(0,8)+'...' : ''} ${userId && email ? '|' : ''} ${email ? email.split('@')[0] : ''}
+								</span>
+							</div>
 						`;
 						
-						const existingTwoThirds = headerRow.querySelector('.two-thirds.column:not(#root)');
-						if (existingTwoThirds) {
-							existingTwoThirds.replaceWith(userInfoDiv);
-						} else {
-							headerRow.appendChild(userInfoDiv);
-						}
+						oneThirdColumn.innerHTML = `
+							<div>
+								<h4 style="margin-bottom:0;"><b>Black</b>Berry</h4>
+								<p style="margin-bottom:0;">Online State</p>
+							</div>
+							${userInfo}
+						`;
 					}
 				});
 			}
