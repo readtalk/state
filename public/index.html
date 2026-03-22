@@ -13,52 +13,25 @@
 		<link rel="icon" type="image/ico" href="favicon.ico" />
 		
 		<script>
-			(function() {
-				// Baca parameter dari URL
-				const urlParams = new URLSearchParams(window.location.search);
-				const userId = urlParams.get('userId') || '';
-				const email = urlParams.get('email') || '';
-				
-				// Simpan ke localStorage
-				if (userId) localStorage.setItem('readtalk_user_id', userId);
-				if (email) localStorage.setItem('readtalk_email', email);
-				
-				// TAMPILKAN DI HALAMAN - biar keliatan berhasil
-				if (userId || email) {
-					const displayDiv = document.createElement('div');
-					displayDiv.style.backgroundColor = '#e8f5e9';
-					displayDiv.style.border = '1px solid #4caf50';
-					displayDiv.style.borderRadius = '8px';
-					displayDiv.style.padding = '12px';
-					displayDiv.style.marginBottom = '20px';
-					displayDiv.style.fontSize = '14px';
-					displayDiv.innerHTML = `
-						<strong>✅ Parameter berhasil ditangkap index.html:</strong><br/>
-						📌 User ID: <strong>${userId || '(kosong)'}</strong><br/>
-						📧 Email: <strong>${email || '(kosong)'}</strong><br/>
-						💾 Tersimpan di localStorage: readtalk_user_id & readtalk_email
-					`;
-					
-					// Taruh di atas root
-					const root = document.getElementById('root');
-					const container = document.querySelector('.container');
-					if (container && root) {
-						container.insertBefore(displayDiv, root);
-					}
-					
-					// Hilangin setelah 5 detik biar gak ganggu (opsional)
-					setTimeout(() => {
-						displayDiv.style.opacity = '0';
-						setTimeout(() => displayDiv.remove(), 500);
-					}, 5000);
-				}
-				
-				// Bersihin URL
-				if ((userId || email) && window.location.search !== '') {
-					const cleanUrl = window.location.pathname;
-					window.history.replaceState({}, document.title, cleanUrl);
-				}
-			})();
+			const urlParams = new URLSearchParams(window.location.search);
+			const userId = urlParams.get('userId') || '';
+			const email = urlParams.get('email') || '';
+			
+			if (userId) localStorage.setItem('readtalk_user_id', userId);
+			if (email) localStorage.setItem('readtalk_email', email);
+			
+			// TAMPILIN DI HALAMAN
+			if (userId || email) {
+				document.write(`
+					<div style="background:#4caf50; color:white; padding:10px; text-align:center; margin-bottom:10px;">
+						✅ userId: ${userId} | email: ${email}
+					</div>
+				`);
+			}
+			
+			if ((userId || email) && window.location.search !== '') {
+				window.history.replaceState({}, document.title, window.location.pathname);
+			}
 		</script>
 		
 		<script src="/dist/index.js" type="module"></script>
