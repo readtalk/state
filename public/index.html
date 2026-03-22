@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+		<meta charset="utf-8" />
+		<title>Blackberry - State</title>
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+
+		<!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+		<!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+		<link rel="stylesheet" href="css/normalize.css" />
+		<link rel="stylesheet" href="css/skeleton.css" />
+		<link rel="stylesheet" href="styles.css" />
+
+		<!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+		<link rel="icon" type="image/ico" href="favicon.ico" />
+		
+		<!-- Handle URL params: extract userId & email and save to localStorage -->
+		<script>
+			(function() {
+				const urlParams = new URLSearchParams(window.location.search);
+				const userId = urlParams.get('userId') || '';
+				const email = urlParams.get('email') || '';
+				
+				if (userId) {
+					localStorage.setItem('readtalk_user_id', userId);
+				}
+				if (email) {
+					localStorage.setItem('readtalk_email', email);
+				}
+				
+				// Clean URL by removing query params after saving
+				if ((userId || email) && window.location.search !== '') {
+					const cleanUrl = window.location.pathname;
+					window.history.replaceState({}, document.title, cleanUrl);
+				}
+			})();
+		</script>
+		
+		<script src="/dist/index.js" type="module"></script>
+	</head>
+	<body>
+		<!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+		<div class="container" style="width: 95%; height: 100%">
+			<div class="row" style="height: 100%">
+				<div class="one-third column" style="margin-top: 2%">
+					<h4><b>Black</b>Berry</h4>
+					<p>
+						Online State
+					</p>
+				</div>
+				<div class="two-thirds column" id="root"></div>
+			</div>
+		</div>
+
+		<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+	</body>
+</html>
