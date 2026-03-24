@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>READTalk - State</title>
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<link rel="stylesheet" href="css/Pico.css" />
+		<link rel="stylesheet" href="styles.css" />
+		<link rel="icon" type="image/ico" href="favicon.ico" />
+		
+		<script>
+			const urlParams = new URLSearchParams(window.location.search);
+			const userId = urlParams.get('userId') || '';
+			const email = urlParams.get('email') || '';
+			
+			if (userId) localStorage.setItem('readtalk_user_id', userId);
+			if (email) localStorage.setItem('readtalk_email', email);
+			
+			// Banner verifikasi (opsional, bisa dihapus setelah testing)
+			if (userId || email) {
+				document.write(`
+					<div style="background:#4caf50; color:white; padding:10px; text-align:center; margin-bottom:10px;">
+						Params captured: userId: ${userId} | email: ${email}
+					</div>
+				`);
+			}
+			
+			if ((userId || email) && window.location.search !== '') {
+				window.history.replaceState({}, document.title, window.location.pathname);
+			}
+		</script>
+		
+		<script src="/dist/index.js" type="module"></script>
+	</head>
+	<body>
+		<div class="container" style="width: 95%; height: 100%">
+			<!-- Ganti row dengan grid, sesuaikan proporsi -->
+			<div class="grid" style="height: 100%">
+				<div style="grid-column: span 4; margin-top: 2%;">
+					<h4><b>READT</b>alk</h4>
+					<p>Online State</p>
+				</div>
+				<div style="grid-column: span 8;" id="root"></div>
+			</div>
+		</div>
+	</body>
+</html>
