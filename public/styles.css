@@ -50,48 +50,37 @@ html {
 	color: #ccc;
 }
 
-/* ============================================================
-   TAMBAHAN UNTUK MODAL SETTINGS & TOMBOL 3 TITIK
-   ============================================================ */
-
-/* Tombol 3 titik di panel kiri */
-#menuButton {
-	background: none;
-	border: none;
-	font-size: 1.2rem;
-	cursor: pointer;
-	padding: 0;
-	color: var(--pico-color);
+.send-message {
+    width: auto;
+    padding: 0.5rem 1rem;
+    margin: 0;
 }
 
-#menuButton:hover {
-	opacity: 0.7;
+form {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
 }
 
-/* Modal settings */
-dialog article {
-	max-width: 500px;
-	width: 90%;
+form input {
+    flex: 1;
+    margin-bottom: 0;
 }
 
-dialog form label {
-	display: block;
-	margin-bottom: 1rem;
+form button {
+    width: auto;
+    margin: 0;
 }
 
-dialog input:read-only,
-dialog input:disabled {
-	background-color: var(--pico-muted-border-color);
-	cursor: not-allowed;
+.grid > div:first-child {
+    border-right: 1px solid var(--pico-muted-border-color);
+    padding-right: 1rem;
 }
 
-#deleteAccountButton {
-	margin-top: 1rem;
-	width: 100%;
-}
-
-#deleteAccountButton:hover {
-	background-color: #dc2626;
-	color: white;
-	border-color: #dc2626;
+#root {
+    overflow-y: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
