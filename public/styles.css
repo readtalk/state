@@ -51,84 +51,24 @@ html {
 }
 
 /* ============================================================
-   TAMBAHAN UNTUK HEADER, SEARCH, MODAL
+   TAMBAHAN UNTUK MODAL SETTINGS & TOMBOL 3 TITIK
    ============================================================ */
 
-/* Header */
-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 1rem 0;
-	border-bottom: 1px solid var(--pico-muted-border-color);
-}
-
-header h4 {
-	margin: 0;
-}
-
+/* Tombol 3 titik di panel kiri */
 #menuButton {
-	background: transparent;
+	background: none;
 	border: none;
+	font-size: 1.2rem;
 	cursor: pointer;
-	font-size: 1.5rem;
-	line-height: 1;
+	padding: 0;
 	color: var(--pico-color);
-	padding: 0.5rem;
-	width: auto;
-	margin: 0;
 }
 
-/* Search section */
-#searchInput {
-	margin-bottom: 0;
+#menuButton:hover {
+	opacity: 0.7;
 }
 
-#searchResults {
-	margin-top: 0.5rem;
-	max-height: 200px;
-	overflow-y: auto;
-}
-
-.search-result-item {
-	padding: 0.5rem;
-	border-bottom: 1px solid var(--pico-muted-border-color);
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.search-result-item:last-child {
-	border-bottom: none;
-}
-
-.search-result-info strong {
-	display: block;
-}
-
-.search-result-info small {
-	color: var(--pico-muted-color);
-}
-
-.search-result-item button {
-	width: auto;
-	margin: 0;
-	padding: 0.25rem 0.75rem;
-}
-
-/* Chat history left panel */
-#chatHistory {
-	height: 100%;
-	overflow-y: auto;
-}
-
-#chatHistory p {
-	color: var(--pico-muted-color);
-	text-align: center;
-	padding: 1rem;
-}
-
-/* Modal */
+/* Modal settings */
 dialog article {
 	max-width: 500px;
 	width: 90%;
@@ -150,33 +90,8 @@ dialog input:disabled {
 	width: 100%;
 }
 
-/* Input form */
-form.row {
-	display: flex;
-	gap: 0.5rem;
-	margin: 1rem 0;
-}
-
-form.row input {
-	flex: 1;
-	margin-bottom: 0;
-}
-
-form.row button {
-	width: auto;
-	margin: 0;
-}
-
-/* Chat area */
-.chat.container {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	padding: 0;
-}
-
-.chat .messages {
-	flex: 1;
-	overflow-y: auto;
-	padding: 1rem 0;
+#deleteAccountButton:hover {
+	background-color: #dc2626;
+	color: white;
+	border-color: #dc2626;
 }
