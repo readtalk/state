@@ -1,0 +1,246 @@
+/* ============================================================
+   BASE STYLES (dipertahankan dari asli)
+   ============================================================ */
+
+body,
+html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.chat {
+	padding-top: 40px;
+}
+
+#root {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	overflow-y: auto;
+	height: 100%;
+	/* padding: 10px; */
+}
+
+.message {
+	margin-bottom: 10px;
+}
+
+.message .user {
+	font-weight: bold;
+	text-align: right;
+}
+
+.message .remove {
+	position: absolute;
+	width: 22px;
+	height: 20px;
+	left: -60px;
+	/* display: "block", */
+	display: none;
+	padding: 0;
+	line-height: 18px;
+	border: "none";
+}
+
+.send-message {
+	padding: 0;
+}
+
+.my-input-text::placeholder {
+	color: #ccc;
+}
+
+/* ============================================================
+   HEADER & MENU BUTTON
+   ============================================================ */
+
+header {
+	background-color: var(--pico-background-color);
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+
+#menuButton {
+	font-size: 1.5rem;
+	line-height: 1;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	color: var(--pico-color);
+}
+
+#menuButton:hover {
+	opacity: 0.7;
+}
+
+/* ============================================================
+   SEARCH SECTION
+   ============================================================ */
+
+#searchInput {
+	width: 100%;
+}
+
+#searchResults {
+	max-height: 200px;
+	overflow-y: auto;
+	background-color: var(--pico-background-color);
+	border-radius: var(--pico-border-radius);
+	box-shadow: var(--pico-box-shadow);
+}
+
+#searchResults div:last-child {
+	border-bottom: none;
+}
+
+#searchResults button {
+	font-size: 0.75rem;
+	padding: 0.25rem 0.75rem;
+}
+
+/* ============================================================
+   CHAT HISTORY (LEFT PANEL)
+   ============================================================ */
+
+#chatHistory {
+	height: 100%;
+	overflow-y: auto;
+}
+
+#chatHistory p {
+	color: var(--pico-muted-color);
+	text-align: center;
+	padding: 1rem;
+}
+
+/* ============================================================
+   MODAL CUSTOM STYLES (Pico sudah dasar, tambah ini)
+   ============================================================ */
+
+dialog article {
+	max-width: 500px;
+	width: 90%;
+}
+
+dialog form label {
+	display: block;
+	margin-bottom: 1rem;
+}
+
+dialog input[readonly],
+dialog input:disabled {
+	background-color: var(--pico-muted-border-color);
+	cursor: not-allowed;
+}
+
+#deleteAccountButton {
+	margin-top: 1rem;
+	width: 100%;
+}
+
+#deleteAccountButton:hover {
+	background-color: #dc2626;
+	color: white;
+	border-color: #dc2626;
+}
+
+/* ============================================================
+   CHAT MESSAGES (kustomisasi)
+   ============================================================ */
+
+.chat.container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 0 1rem;
+}
+
+.chat .messages {
+	flex: 1;
+	overflow-y: auto;
+	padding: 1rem 0;
+}
+
+.message {
+	display: flex;
+	padding: 0.5rem 0;
+}
+
+.message .user {
+	font-weight: bold;
+	text-align: right;
+	padding-right: 1rem;
+	width: 80px;
+	flex-shrink: 0;
+}
+
+.message .content {
+	flex: 1;
+	word-break: break-word;
+}
+
+/* Own messages */
+.message.own {
+	justify-content: flex-end;
+}
+
+.message.own .user {
+	text-align: left;
+	padding-left: 1rem;
+	padding-right: 0;
+}
+
+.message.own .content {
+	text-align: right;
+}
+
+/* ============================================================
+   INPUT FORM
+   ============================================================ */
+
+form.row {
+	display: flex;
+	gap: 0.5rem;
+	margin: 1rem 0;
+	padding: 0.5rem 0;
+	background-color: var(--pico-background-color);
+	position: sticky;
+	bottom: 0;
+}
+
+form.row input {
+	flex: 1;
+	margin: 0;
+}
+
+form.row button {
+	width: auto;
+	margin: 0;
+	padding: 0.5rem 1rem;
+	font-size: 1.2rem;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+
+.text-muted {
+	color: var(--pico-muted-color);
+}
+
+.text-center {
+	text-align: center;
+}
+
+.mt-2 {
+	margin-top: 0.5rem;
+}
+
+.mb-2 {
+	margin-bottom: 0.5rem;
+}
