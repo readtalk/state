@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>READTalk - State</title>
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<link rel="stylesheet" href="css/Pico.css" />
+		<link rel="stylesheet" href="styles.css" />
+		<link rel="icon" type="image/ico" href="favicon.ico" />
+		
+		<script>
+			// ============================================================
+			// BACA PARAMETER DARI URL & SIMPAN KE LOCALSTORAGE
+			// ============================================================
+			const urlParams = new URLSearchParams(window.location.search);
+			const userId = urlParams.get('userId') || '';
+			const email = urlParams.get('email') || '';
+			
+			if (userId) localStorage.setItem('readtalk_user_id', userId);
+			if (email) localStorage.setItem('readtalk_email', email);
+			
+			// Set default values if not exists
+			if (userId && email) {
+				const defaultDisplayName = email.split('@')[0];
+				const defaultUsername = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '_').slice(0, 15);
+				
+				if (!localStorage.getItem('readtalk_displayName')) {
+					localStorage.setItem('readtalk_displayName', defaultDisplayName);
+				}
+				if (!localStorage.getItem('readtalk_username')) {
+					localStorage.setItem('readtalk_username', defaultUsername);
+				}
+				if (!localStorage.getItem('readtalk_lastUsernameChange')) {
+					localStorage.setItem('readtalk_lastUsernameChange', Date.now().toString());
+				}
+				if (!localStorage.getItem('readtalk_createdAt')) {
+					localStorage.setItem('readtalk_createdAt', Date.now().toString());
+				}
+			}
+			
+			// Banner verifikasi (merah, sesuai keinginan Anda)
+			if (userId || email) {
+				document.write(`
+					<div style="background:#ff0000; color:white; padding:10px; text-align:center; margin-bottom:10px;">
+						userId: ${userId} | email: ${email}
+					</div>
+				`);
+			}
+			
+			// Bersihkan URL dari query params
+			if ((userId || email) && window.location.search !== '') {
+				window.history.replaceState({}, document.title, window.location.pathname);
+			}
+		</script>
+		
+		<script src="/dist/index.js" type="module"></script>
+	</head>
+	<body>
+		<div class="container" style="width: 95%; height: 100%">
+			
+			<!-- ============================================================ -->
+			<!-- HEADER dengan tombol 3 titik -->
+			<!-- ============================================================ -->
+			<header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--pico-muted-border-color);">
+				<h4 style="margin: 0;"><b>READT</b>alk</h4>
+				<button id="menuButton" class="secondary outline" style="width: auto; margin: 0; padding: 0.5rem;">
+					•••
+				</button>
+			</header>
+			
+			<!-- ============================================================ -->
+			<!-- KOLOM PENCARIAN -->
+			<!-- ============================================================ -->
+			<div style="margin: 1rem 0;">
+				<input 
+					type="search" 
+					id="searchInput" 
+					placeholder="Cari user berdasarkan nama atau @username..."
+					autocomplete="off"
+				/>
+				<div id="searchResults" style="margin-top: 0.5rem;"></div>
+			</div>
+			
+			<!-- ============================================================ -->
+			<!-- MAIN CONTENT (grid: left panel + chat area) -->
+			<!-- ============================================================ -->
+			<div class="grid" style="height: calc(100% - 120px);">
+				<div style="grid-column: span 4; overflow-y: auto; border-right: 1px solid var(--pico-muted-border-color); padding-right: 1rem;">
+					<h6>Chat History</h6>
+					<div id="chatHistory">
+						<p style="color: var(--pico-muted-color);">No chats yet</p>
+					</div>
+				</div>
+				<div style="grid-column: span 8;" id="root"></div>
+			</div>
+		</div>
+		
+		<!-- ============================================================ -->
+		<!-- MODAL SETTINGS (Pico <dialog>) -->
+		<!-- ============================================================ -->
+		<dialog id="settingsModal">
+			<article>
+				<header>
+					<button id="closeModalButton" aria-label="Close" rel="prev"></button>
+					<h3>Settings</h3>
+				</header>
+				<main>
+					<form id="settingsForm">
+						<!-- Your Name (displayName) - bisa edit kapan saja -->
+						<label>
+							Your Name
+							<input type="text" id="displayNameInput" placeholder="Your display name" />
+							<small>Nama yang tampil di chat. Bisa diganti kapan saja.</small>
+						</label>
+						
+						<!-- @username - bisa edit 1x per 60 hari -->
+						<label>
+							@username
+							<input type="text" id="usernameInput" placeholder="@username" />
+							<small id="usernameHelp">Username unik untuk pencarian. Bisa diganti setiap 60 hari.</small>
+						</label>
+						
+						<!-- Email - permanen -->
+						<label>
+							Email
+							<input type="email" id="emailInput" readonly disabled />
+							<small>Email tidak bisa diubah.</small>
+						</label>
+						
+						<!-- User ID - permanen -->
+						<label>
+							User ID
+							<input type="text" id="userIdInput" readonly disabled />
+							<small>ID internal, tidak bisa diubah.</small>
+						</label>
+						
+						<hr />
+						
+						<!-- Delete Account -->
+						<button type="button" id="deleteAccountButton" class="secondary outline" style="color: #dc2626; border-color: #dc2626;">
+							Delete Account
+						</button>
+					</form>
+				</main>
+				<footer>
+					<button id="cancelModalButton" class="secondary">Cancel</button>
+					<button id="saveSettingsButton">Save Changes</button>
+				</footer>
+			</article>
+		</dialog>
+		
+		<!-- ============================================================ -->
+		<!-- SCRIPT UNTUK HANDLE MODAL & FORM -->
+		<!-- ============================================================ -->
+		<script>
+			// DOM elements
+			const menuButton = document.getElementById('menuButton');
+			const settingsModal = document.getElementById('settingsModal');
+			const closeModalButton = document.getElementById('closeModalButton');
+			const cancelModalButton = document.getElementById('cancelModalButton');
+			const saveSettingsButton = document.getElementById('saveSettingsButton');
+			const displayNameInput = document.getElementById('displayNameInput');
+			const usernameInput = document.getElementById('usernameInput');
+			const emailInput = document.getElementById('emailInput');
+			const userIdInput = document.getElementById('userIdInput');
+			const usernameHelp = document.getElementById('usernameHelp');
+			const deleteAccountButton = document.getElementById('deleteAccountButton');
+			const searchInput = document.getElementById('searchInput');
+			const searchResultsDiv = document.getElementById('searchResults');
+			
+			// Load user data into modal
+			function loadUserDataToModal() {
+				const displayName = localStorage.getItem('readtalk_displayName') || '';
+				const username = localStorage.getItem('readtalk_username') || '';
+				const email = localStorage.getItem('readtalk_email') || '';
+				const userId = localStorage.getItem('readtalk_user_id') || '';
+				const lastUsernameChange = parseInt(localStorage.getItem('readtalk_lastUsernameChange') || '0');
+				
+				displayNameInput.value = displayName;
+				usernameInput.value = username;
+				emailInput.value = email;
+				userIdInput.value = userId;
+				
+				// Show username cooldown info
+				if (lastUsernameChange) {
+					const daysSince = (Date.now() - lastUsernameChange) / (1000 * 60 * 60 * 24);
+					const daysLeft = Math.max(0, 60 - Math.floor(daysSince));
+					if (daysLeft > 0) {
+						usernameHelp.textContent = `Username dapat diganti setiap 60 hari. ${daysLeft} hari lagi.`;
+						usernameInput.disabled = true;
+					} else {
+						usernameHelp.textContent = `Username unik untuk pencarian. Bisa diganti sekarang.`;
+						usernameInput.disabled = false;
+					}
+				}
+			}
+			
+			// Save settings (will be sent to React via custom event)
+			function saveSettings() {
+				const newDisplayName = displayNameInput.value.trim();
+				const newUsername = usernameInput.value.trim();
+				const currentUsername = localStorage.getItem('readtalk_username');
+				
+				const updates = {};
+				if (newDisplayName && newDisplayName !== localStorage.getItem('readtalk_displayName')) {
+					updates.displayName = newDisplayName;
+				}
+				if (newUsername && newUsername !== currentUsername) {
+					// Validate username format
+					if (!/^[a-zA-Z0-9_]{1,15}$/.test(newUsername)) {
+						alert('Username hanya boleh berisi huruf, angka, dan underscore (max 15 karakter)');
+						return;
+					}
+					updates.username = newUsername;
+				}
+				
+				if (Object.keys(updates).length > 0) {
+					// Send to React app via custom event
+					window.dispatchEvent(new CustomEvent('saveSettings', { detail: updates }));
+				}
+				
+				settingsModal.close();
+			}
+			
+			// Open modal
+			menuButton.addEventListener('click', () => {
+				loadUserDataToModal();
+				settingsModal.showModal();
+			});
+			
+			// Close modal
+			closeModalButton.addEventListener('click', () => settingsModal.close());
+			cancelModalButton.addEventListener('click', () => settingsModal.close());
+			saveSettingsButton.addEventListener('click', saveSettings);
+			
+			// Delete account (confirmation)
+			deleteAccountButton.addEventListener('click', () => {
+				if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+					localStorage.clear();
+					window.location.href = '/';
+				}
+			});
+			
+			// Search functionality (will be connected to React via custom event)
+			searchInput.addEventListener('input', (e) => {
+				const query = e.target.value;
+				window.dispatchEvent(new CustomEvent('search', { detail: { query } }));
+			});
+			
+			// Listen for search results from React
+			window.addEventListener('searchResults', (e) => {
+				const results = e.detail.results;
+				if (results.length === 0) {
+					searchResultsDiv.innerHTML = '<p style="color: var(--pico-muted-color);">No users found</p>';
+				} else {
+					searchResultsDiv.innerHTML = results.map(user => `
+						<div style="padding: 0.5rem; border-bottom: 1px solid var(--pico-muted-border-color);">
+							<strong>${user.displayName}</strong> <span style="color: var(--pico-muted-color);">@${user.username}</span>
+							<button class="secondary outline" style="float: right; width: auto; padding: 0.25rem 0.5rem;" onclick="window.dispatchEvent(new CustomEvent('startChat', { detail: { userId: '${user.userId}' } }))">
+								Chat
+							</button>
+						</div>
+					`).join('');
+				}
+			});
+		</script>
+	</body>
+</html>
