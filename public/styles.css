@@ -49,38 +49,3 @@ html {
 .my-input-text::placeholder {
 	color: #ccc;
 }
-
-.send-message {
-    width: auto;
-    padding: 0.5rem 1rem;
-    margin: 0;
-}
-
-form {
-    display: flex;
-    gap: 0.5rem;
-    margin: 1rem 0;
-}
-
-form input {
-    flex: 1;
-    margin-bottom: 0;
-}
-
-form button {
-    width: auto;
-    margin: 0;
-}
-
-.grid > div:first-child {
-    border-right: 1px solid var(--pico-muted-border-color);
-    padding-right: 1rem;
-}
-
-#root {
-    overflow-y: auto;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
