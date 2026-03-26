@@ -10,11 +10,7 @@ import {
 } from "react-router";
 import { nanoid } from "nanoid";
 
-import { names, type ChatMessage, type Message, type User, type SearchResult } from "../shared";
-
-// ============================================================
-// HOOK UNTUK BACA DATA USER DARI LOCALSTORAGE
-// ============================================================
+import { type ChatMessage, type Message, type User, type SearchResult } from "../shared";
 
 function useUser() {
 	const [user, setUser] = useState<User | null>(null);
@@ -51,10 +47,6 @@ function useUser() {
 	return { user, loading, updateUser };
 }
 
-// ============================================================
-// HOOK UNTUK SEARCH (AKAN DIHUBUNGKAN KE INDEX.HTML NANTI)
-// ============================================================
-
 function useSearch(socket: ReturnType<typeof usePartySocket>) {
 	const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -67,8 +59,7 @@ function useSearch(socket: ReturnType<typeof usePartySocket>) {
 			setSearchResults([]);
 		}
 	};
-
-	// Handle search results from server
+	
 	useEffect(() => {
 		const handler = (evt: MessageEvent) => {
 			const data = JSON.parse(evt.data);
@@ -83,18 +74,14 @@ function useSearch(socket: ReturnType<typeof usePartySocket>) {
 	return { searchResults, searchQuery, search };
 }
 
-// ============================================================
-// MAIN APP COMPONENT
-// ============================================================
-
 function App() {
 	const { user, loading, updateUser } = useUser();
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [inputValue, setInputValue] = useState("");
 	const { room } = useParams();
 	const registeredRef = useRef(false);
+	const messagesEndRef = useRef<HTMLDivElement>(null);
 
-	// Generate room ID from userId (untuk private chat, nanti akan diubah)
 	const effectiveRoom = room || (user ? user.userId : nanoid());
 
 	const socket = usePartySocket({
@@ -102,16 +89,14 @@ function App() {
 		room: effectiveRoom,
 		onMessage: (evt) => {
 			const message = JSON.parse(evt.data as string);
-			
-			// Handle register response
+						
 			if (message.type === "register_response") {
 				if (message.success && user) {
 					updateUser(message.user);
 				}
 				return;
 			}
-			
-			// Handle profile update response
+					
 			if (message.type === "profile_updated") {
 				if (message.success && user) {
 					if (message.field === "displayName") {
@@ -125,7 +110,6 @@ function App() {
 				return;
 			}
 
-			// Handle regular chat messages
 			const msg = message as Message;
 			if (msg.type === "add") {
 				const foundIndex = messages.findIndex((m) => m.id === msg.id);
@@ -171,7 +155,6 @@ function App() {
 		},
 	});
 
-	// Register user to server when connected
 	useEffect(() => {
 		if (socket && user && !registeredRef.current) {
 			socket.send(
@@ -186,6 +169,12 @@ function App() {
 			registeredRef.current = true;
 		}
 	}, [socket, user]);
+
+	useEffect(() => {
+		if (messagesEndRef.current) {
+			messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+		}
+	}, [messages]);
 
 	if (loading) {
 		return <div className="chat container">Loading...</div>;
@@ -205,6 +194,7 @@ function App() {
 					<div className="ten columns">{message.content}</div>
 				</div>
 			))}
+			<div ref={messagesEndRef} /> {/* AUTO SCROLL ANCHOR */}
 			<form
 				className="row"
 				onSubmit={(e) => {
@@ -249,10 +239,6 @@ function App() {
 		</div>
 	);
 }
-
-// ============================================================
-// ROUTING
-// ============================================================
 
 createRoot(document.getElementById("root")!).render(
 	<BrowserRouter>
