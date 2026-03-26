@@ -49,3 +49,57 @@ html {
 .my-input-text::placeholder {
 	color: #ccc;
 }
+
+/* Chat container */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Messages area (scroll) */
+.messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Message item */
+.message-item {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.message-user {
+    font-weight: bold;
+    min-width: 80px;
+    text-align: right;
+}
+
+.message-content {
+    flex: 1;
+    word-break: break-word;
+}
+
+/* Input form */
+.input-form {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid var(--pico-muted-border-color);
+    background: var(--pico-background-color);
+}
+
+.message-input {
+    flex: 1;
+    margin: 0;
+}
+
+.send-button {
+    width: auto;
+    margin: 0;
+    padding: 0.5rem 1rem;
+}
