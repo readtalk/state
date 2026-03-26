@@ -7,7 +7,9 @@
 		<meta name="author" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<link rel="stylesheet" href="css/Pico.css" />
+		<!-- Skeleton + normalize -->
+		<link rel="stylesheet" href="css/normalize.css" />
+		<link rel="stylesheet" href="css/skeleton.css" />
 		<link rel="stylesheet" href="styles.css" />
 		<link rel="icon" type="image/ico" href="favicon.ico" />
 		
@@ -36,18 +38,18 @@
 		<script src="/dist/index.js" type="module"></script>
 	</head>
 	<body>
-		<div class="container" style="width: 95%; height: 100%">			
-			<div class="grid" style="height: 100%">
-				<!-- PANEL KIRI -->
-				<div style="grid-column: span 4; margin-top: 2%;">
+		<div class="container" style="width: 95%; height: 100%">
+			<div class="row" style="height: 100%">
+				<!-- PANEL KIRI (one-third) -->
+				<div class="one-third column" style="margin-top: 2%;">
 					<h4><b>READT</b>alk</h4>
 					<button id="menuButton" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0;">
 						•••
 					</button>
 				</div>
 				
-				<!-- PANEL KANAN (chat area dengan scroll) -->
-				<div style="grid-column: span 8; overflow-y: auto; height: 100%;" id="root"></div>
+				<!-- PANEL KANAN (two-thirds) chat area -->
+				<div class="two-thirds column" id="root" style="height: 100%; overflow-y: auto;"></div>
 			</div>
 		</div>
 		
@@ -108,77 +110,151 @@
 			const emailInput = document.getElementById('emailInput');
 			const userIdInput = document.getElementById('userIdInput');
 			const usernameHelp = document.getElementById('usernameHelp');
-			const deleteAccountButton = document.getElementById('deleteAccountButton');
+			const deleteAccountAccountButton = document.getElementById('deleteAccountButtonButton = document.getElementById('deleteAccountButton');
+			
+			// Load user data into modal');
 			
 			// Load user data into modal
 			function loadUserDataToModal() {
-				const displayName = localStorage.getItem('readtalk_displayName') || '';
+
+			function loadUserDataToModal() {
+				const displayName = localStorage.getItem('readtalk_d				const displayName = localStorage.getItem('readtalk_displayName')isplayName') || '';
 				const username = localStorage.getItem('readtalk_username') || '';
-				const email = localStorage.getItem('readtalk_email') || '';
-				const userId = localStorage.getItem('readtalk_user_id') || '';
+				const email = || '';
+				const username = localStorage.getItem('readtalk_username') || '';
+				const email = localStorage.getItem localStorage.getItem('readtalk_email') || '';
+				const userId = localStorage.getItem('readtalk('readtalk_email') || '';
+				const userId = localStorage.getItem('_user_id') || '';
+				const lastUsernameChange = parseInt(localStorage.getItem('readtalk_user_id') || '';
 				const lastUsernameChange = parseInt(localStorage.getItem('readtalk_lastUsernameChange') || '0');
 				
+readtalk_lastUsernameChange') || '0');
+				
 				displayNameInput.value = displayName;
+								displayNameInput.value = displayName;
 				usernameInput.value = username;
+usernameInput.value = username;
 				emailInput.value = email;
+				userIdInput				emailInput.value = email;
 				userIdInput.value = userId;
 				
+			.value = userId;
+				
 				// Username cooldown
+				if	// Username cooldown
 				if (lastUsernameChange) {
-					const daysSince = (Date.now() - lastUsernameChange) / (1000 * 60 * 60 * 24);
-					const daysLeft = Math.max(0, 60 - Math.floor(daysSince));
+					const daysSince (lastUsernameChange) {
+					const daysSince = (Date.now() - lastUsernameChange) / ( = (Date.now() - lastUsernameChange) / (10001000 * 60 * 60 * 24);
+					const daysLeft = Math * 60 * 60 * 24);
+					const daysLeft = Math.max(0, 60 - Math.floor(d.max(0, 60 - Math.floor(daysSince));
+					if (daysLeft > 0)aysSince));
 					if (daysLeft > 0) {
-						usernameHelp.textContent = `Username dapat diganti setiap 60 hari. ${daysLeft} hari lagi.`;
+						usernameHelp.textContent = `Username {
+						usernameHelp.textContent = `Username dapat diganti setiap 60 hari. ${daysLeft} dapat diganti setiap 60 hari. ${daysLeft} hari lagi.`;
+						usernameInput.disabled = true;
+				 hari lagi.`;
 						usernameInput.disabled = true;
 					} else {
-						usernameHelp.textContent = `Username unik untuk pencarian. Bisa diganti sekarang.`;
+						usernameHelp	} else {
+						usernameHelp.textContent = `Username unik untuk pencarian. Bisa.textContent = `Username unik untuk pencarian. Bisa diganti sekarang.`;
+						usernameInput diganti sekarang.`;
 						usernameInput.disabled = false;
+					}
+.disabled = false;
 					}
 				}
 			}
 			
 			// Save settings
+			function save				}
+			}
+			
+			// Save settings
 			function saveSettings() {
+				const newDisplayName = displaySettings() {
 				const newDisplayName = displayNameInput.value.trim();
+				const newUsername = usernameInputNameInput.value.trim();
 				const newUsername = usernameInput.value.trim();
 				
 				const updates = {};
-				if (newDisplayName && newDisplayName !== localStorage.getItem('readtalk_displayName')) {
+				if (newDisplay.value.trim();
+				
+				const updates = {};
+				if (newDisplayName && newDisplayName !== localStorage.getItemName && newDisplayName !== localStorage.getItem('readtalk_displayName')) {
+					('readtalk_displayName')) {
 					updates.displayName = newDisplayName;
 				}
-				if (newUsername && newUsername !== localStorage.getItem('readtalk_username')) {
-					if (!/^[a-zA-Z0-9_]{1,15}$/.test(newUsername)) {
-						alert('Username hanya boleh berisi huruf, angka, dan underscore (max 15 karakter)');
+				if (newupdates.displayName = newDisplayName;
+				}
+				if (newUsername && newUsername !== localStorage.getItem('readUsername && newUsername !== localStorage.getItem('readtalk_username')) {
+					if (!/^[a-zAtalk_username')) {
+					if (!/^[a-zA-Z0-9_]{1,-Z0-9_]{1,15}$/.test15}$/.test(newUsername)) {
+						alert('Username hanya boleh ber(newUsername)) {
+						alert('Username hanya boleh berisi huruf, angka, dan underscore (max 15 karakter)isi huruf, angka, dan underscore (max 15 karakter)');
+					');
 						return;
 					}
+					updates.username	return;
+					}
 					updates.username = newUsername;
+ = newUsername;
 				}
 				
-				if (Object.keys(updates).length > 0) {
+				if (Object.keys(up				}
+				
+dates).length > 0) {
+					window.dispatchEvent(new				if (Object.keys(updates).length > 0) {
 					window.dispatchEvent(new CustomEvent('saveSettings', { detail: updates }));
+ CustomEvent('saveSettings', { detail: updates				}
+				
+				settingsModal.close();
+			}
+			
+			// }));
 				}
 				
 				settingsModal.close();
 			}
 			
 			// Open modal
+			menuButton.addEventListener Open modal
 			menuButton.addEventListener('click', () => {
+				loadUserDataToModal();
+				settingsModal('click', () => {
 				loadUserDataToModal();
 				settingsModal.showModal();
 			});
+.showModal();
+			});
 			
 			// Close modal
+			closeModalButton.addEventListener('			
+			// Close modal
 			closeModalButton.addEventListener('click', () => settingsModal.close());
+			cancelModalButton.addEventListenerclick', () => settingsModal.close());
 			cancelModalButton.addEventListener('click', () => settingsModal.close());
-			saveSettingsButton.addEventListener('click', saveSettings);
+			saveSettingsButton.addEventListener('click',('click', () => settingsModal.close());
+			saveSettingsButton.addEventListener('click', saveSettings saveSettings);
 			
 			// Delete account
-			deleteAccountButton.addEventListener('click', () => {
+);
+			
+			// Delete account
+			deleteAccountButton.addEventListener('click', () =>			deleteAccountButton.addEventListener('click', () => {
+				if (confirm('Are you sure you want to delete your account? {
 				if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+					localStorage.clear This action cannot be undone.')) {
 					localStorage.clear();
 					window.location.href = '/';
 				}
 			});
+		</script();
+					window.location.href = '/';
+				}
+			});
 		</script>
+	</body>
+</html>
+>
 	</body>
 </html>
