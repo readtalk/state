@@ -47,37 +47,11 @@ function useUser() {
 	return { user, loading, updateUser };
 }
 
-function useSearch(socket: ReturnType<typeof usePartySocket>) {
-	const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-	const [searchQuery, setSearchQuery] = useState("");
-
-	const search = (query: string) => {
-		setSearchQuery(query);
-		if (query.trim()) {
-			socket.send(JSON.stringify({ type: "search", query: query.trim() }));
-		} else {
-			setSearchResults([]);
-		}
-	};
-	
-	useEffect(() => {
-		const handler = (evt: MessageEvent) => {
-			const data = JSON.parse(evt.data);
-			if (data.type === "search_results") {
-				setSearchResults(data.results);
-			}
-		};
-		socket.addEventListener("message", handler);
-		return () => socket.removeEventListener("message", handler);
-	}, [socket]);
-
-	return { searchResults, searchQuery, search };
-}
-
 function App() {
 	const { user, loading, updateUser } = useUser();
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [inputValue, setInputValue] = useState("");
+	const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 	const { room } = useParams();
 	const registeredRef = useRef(false);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -107,6 +81,11 @@ function App() {
 				} else if (!message.success) {
 					console.error(message.message);
 				}
+				return;
+			}
+
+			if (message.type === "search_results") {
+				setSearchResults(message.results);
 				return;
 			}
 
@@ -176,11 +155,48 @@ function App() {
 		}
 	}, [messages]);
 
+	// Kirim hasil pencarian ke HTML
+	useEffect(() => {
+		window.dispatchEvent(new CustomEvent('searchResults', { detail: { results: searchResults } }));
+	}, [searchResults]);
+
+	// Listener dari HTML
+	useEffect(() => {
+		const handleSearch = (e: CustomEvent) => {
+			const query = e.detail.query;
+			if (query && query.trim()) {
+				socket.send(JSON.stringify({ type: "search", query: query.trim() }));
+			}
+		};
+		
+		const handleSaveSettings = (e: CustomEvent) => {
+			const updates = e.detail;
+			if (updates.displayName || updates.username) {
+				socket.send(JSON.stringify({ type: "update_profile", ...updates }));
+			}
+		};
+		
+		const handleStartChat = (e: CustomEvent) => {
+			const { userId: targetUserId } = e.detail;
+			// TODO: implement start chat with targetUserId
+			console.log("Start chat with:", targetUserId);
+		};
+		
+		window.addEventListener('search', handleSearch as EventListener);
+		window.addEventListener('saveSettings', handleSaveSettings as EventListener);
+		window.addEventListener('startChat', handleStartChat as EventListener);
+		
+		return () => {
+			window.removeEventListener('search', handleSearch as EventListener);
+			window.removeEventListener('saveSettings', handleSaveSettings as EventListener);
+			window.removeEventListener('startChat', handleStartChat as EventListener);
+		};
+	}, [socket]);
+
 	if (loading) {
 		return <div className="chat container">Loading...</div>;
 	}
 
-	// Toggle tombol send/mic
 	const isInputEmpty = inputValue.trim() === "";
 	const sendButtonIcon = isInputEmpty ? "●" : "➤";
 
@@ -194,13 +210,12 @@ function App() {
 					<div className="ten columns">{message.content}</div>
 				</div>
 			))}
-			<div ref={messagesEndRef} /> {/* AUTO SCROLL ANCHOR */}
+			<div ref={messagesEndRef} />
 			<form
 				className="row"
 				onSubmit={(e) => {
 					e.preventDefault();
 					if (isInputEmpty) {
-						// Handle voice note (placeholder, nanti diisi)
 						console.log("Voice note not implemented yet");
 						return;
 					}
@@ -222,7 +237,7 @@ function App() {
 
 					setInputValue("");
 				}}
-			>
+			
 				<input
 					type="text"
 					name="content"
