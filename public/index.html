@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>READTalk - State</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/skeleton.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/ico" href="favicon.ico" />
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId') || '';
+        const email = urlParams.get('email') || '';
+        
+        if (userId) localStorage.setItem('readtalk_user_id', userId);
+        if (email) localStorage.setItem('readtalk_email', email);
+        
+        if ((userId || email) && window.location.search !== '') {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    </script>
+    
+    <script src="/dist/index.js" type="module"></script>
+</head>
+<body>
+    <div class="container" style="width: 95%; height: 100%">
+        <!-- KOLOM PENCARIAN -->
+        <div class="row" style="margin-bottom: 1rem;">
+            <div class="twelve columns">
+                <input type="text" id="searchInput" placeholder="Cari user berdasarkan nama atau @username..." style="width: 100%;" />
+                <div id="searchResults" style="margin-top: 0.5rem;"></div>
+            </div>
+        </div>
+        
+        <div class="row" style="height: calc(100% - 80px);">
+            <!-- PANEL KIRI: brand + tombol 3 titik sejajar -->
+            <div class="one-third column" style="margin-top: 2%; display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0;"><b>READT</b>alk</h4>
+                <div style="position: relative;">
+                    <button id="menuButton" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 8px;">
+                        ⋮
+                    </button>
+                    <div id="menuDropdown" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ccc; border-radius: 4px; min-width: 120px; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div id="settingsMenuItem" style="padding: 8px 12px; cursor: pointer;">⚙️ Settings</div>
+                        <div id="logoutMenuItem" style="padding: 8px 12px; cursor: pointer;">🚪 Logout</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PANEL KANAN: chat area -->
+            <div class="two-thirds column" id="root" style="height: 100%; overflow-y: auto;"></div>
+        </div>
+    </div>
+    
+    <!-- MODAL SETTINGS -->
+    <dialog id="settingsModal">
+        <article>
+            <header>
+                <button id="closeModalButton" aria-label="Close" rel="prev"></button>
+                <h3>Settings</h3>
+            </header>
+            <main>
+                <form id="settingsForm">
+                    <label>
+                        Your Name
+                        <input type="text" id="displayNameInput" placeholder="Your display name" />
+                        <small>Nama yang tampil di chat. Bisa diganti kapan saja.</small>
+                    </label>
+                    <label>
+                        @username
+                        <input type="text" id="usernameInput" placeholder="@username" />
+                        <small id="usernameHelp">Username unik untuk pencarian. Bisa diganti setiap 60 hari.</small>
+                    </label>
+                    <label>
+                        Email
+                        <input type="email" id="emailInput" readonly disabled />
+                    </label>
+                    <label>
+                        User ID
+                        <input type="text" id="userIdInput" readonly disabled />
+                    </label>
+                    <hr />
+                    <button type="button" id="deleteAccountButton" class="secondary outline" style="color: #dc2626; border-color: #dc2626;">
+                        Delete Account
+                    </button>
+                </form>
+            </main>
+            <footer>
+                <button id="cancelModalButton" class="secondary">Cancel</button>
+                <button id="saveSettingsButton">Save Changes</button>
+            </footer>
+        </article>
+    </dialog>
+    
+    <script>
+        // DOM elements
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+        const settingsMenuItem = document.getElementById('settingsMenuItem');
+        const logoutMenuItem = document.getElementById('logoutMenuItem');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const cancelModalButton = document.getElementById('cancelModalButton');
+        const saveSettingsButton = document.getElementById('saveSettingsButton');
+        const displayNameInput = document.getElementById('displayNameInput');
+        const usernameInput = document.getElementById('usernameInput');
+        const emailInput = document.getElementById('emailInput');
+        const userIdInput = document.getElementById('userIdInput');
+        const usernameHelp = document.getElementById('usernameHelp');
+        const deleteAccountButton = document.getElementById('deleteAccountButton');
+        const searchInput = document.getElementById('searchInput');
+        const searchResultsDiv = document.getElementById('searchResults');
+        
+        // Toggle dropdown
+        menuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuDropdown.style.display = menuDropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            menuDropdown.style.display = 'none';
+        });
+        
+        // Settings menu item
+        settingsMenuItem.addEventListener('click', () => {
+            loadUserDataToModal();
+            settingsModal.showModal();
+            menuDropdown.style.display = 'none';
+        });
+        
+        // Logout menu item
+        logoutMenuItem.addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = '/';
+        });
+        
+        // Load user data into modal
+        function loadUserDataToModal() {
+            const displayName = localStorage.getItem('readtalk_displayName') || '';
+            const username = localStorage.getItem('readtalk_username') || '';
+            const email = localStorage.getItem('readtalk_email') || '';
+            const userId = localStorage.getItem('readtalk_user_id') || '';
+            const lastUsernameChange = parseInt(localStorage.getItem('readtalk_lastUsernameChange') || '0');
+            
+            displayNameInput.value = displayName;
+            usernameInput.value = username;
+            emailInput.value = email;
+            userIdInput.value = userId;
+            
+            if (lastUsernameChange) {
+                const daysSince = (Date.now() - lastUsernameChange) / (1000 * 60 * 60 * 24);
+                const daysLeft = Math.max(0, 60 - Math.floor(daysSince));
+                if (daysLeft > 0) {
+                    usernameHelp.textContent = `Username dapat diganti setiap 60 hari. ${daysLeft} hari lagi.`;
+                    usernameInput.disabled = true;
+                } else {
+                    usernameHelp.textContent = `Username unik untuk pencarian. Bisa diganti sekarang.`;
+                    usernameInput.disabled = false;
+                }
+            }
+        }
+        
+        // Save settings
+        function saveSettings() {
+            const newDisplayName = displayNameInput.value.trim();
+            const newUsername = usernameInput.value.trim();
+            
+            const updates = {};
+            if (newDisplayName && newDisplayName !== localStorage.getItem('readtalk_displayName')) {
+                updates.displayName = newDisplayName;
+            }
+            if (newUsername && newUsername !== localStorage.getItem('readtalk_username')) {
+                if (!/^[a-zA-Z0-9_]{1,15}$/.test(newUsername)) {
+                    alert('Username hanya boleh berisi huruf, angka, dan underscore (max 15 karakter)');
+                    return;
+                }
+                updates.username = newUsername;
+            }
+            
+            if (Object.keys(updates).length > 0) {
+                window.dispatchEvent(new CustomEvent('saveSettings', { detail: updates }));
+            }
+            
+            settingsModal.close();
+        }
+        
+        // Search handler
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value;
+            window.dispatchEvent(new CustomEvent('search', { detail: { query } }));
+        });
+        
+        // Listen for search results from React
+        window.addEventListener('searchResults', (e) => {
+            const results = e.detail.results;
+            if (!results || results.length === 0) {
+                searchResultsDiv.innerHTML = '<p style="color: #666;">No users found</p>';
+            } else {
+                searchResultsDiv.innerHTML = results.map(user => `
+                    <div style="padding: 0.5rem; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${user.displayName}</strong> <span style="color: #666;">@${user.username}</span>
+                        </div>
+                        <button onclick="window.dispatchEvent(new CustomEvent('startChat', { detail: { userId: '${user.userId}' } }))" style="width: auto; margin: 0; padding: 0.25rem 0.75rem;">
+                            Chat
+                        </button>
+                    </div>
+                `).join('');
+            }
+        });
+        
+        // Modal event listeners
+        closeModalButton.addEventListener('click', () => settingsModal.close());
+        cancelModalButton.addEventListener('click', () => settingsModal.close());
+        saveSettingsButton.addEventListener('click', saveSettings);
+        
+        deleteAccountButton.addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                localStorage.clear();
+                window.location.href = '/';
+            }
+        });
+    </script>
+</body>
+</html>
