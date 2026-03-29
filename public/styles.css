@@ -1,5 +1,4 @@
-/* READTalk - Dark Mode Minimal & Aman */
-/* Hanya warna & tampilan, tidak mengubah posisi apapun */
+/* READTalk - Dark Mode yang Aman & Respect Skeleton */
 
 :root {
   --bg: #0a0a0a;
@@ -13,13 +12,13 @@
   --border: #333333;
 }
 
-/* Warna dasar */
+/* Base */
 html, body {
   background: var(--bg);
   color: var(--text);
 }
 
-/* Brand READTalk */
+/* Header Brand */
 h4 {
   font-size: 1.95rem;
   font-weight: 700;
@@ -71,29 +70,46 @@ h4 b {
   color: var(--text);
 }
 
-/* Nama user di chat */
 .message .user {
-  font-size: 0.85rem;
   color: var(--text-secondary);
+  font-size: 0.85rem;
 }
 
-/* Input Chat dari React (hanya warna) */
-.send-message {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-}
-
-.send-message input {
+/* === INPUT TEXT AREA & TOMBOL SEND (PENTING) === */
+.send-message input,
+.send-message textarea,
+.my-input-text {
   background: var(--surface2) !important;
   border: 1px solid var(--border) !important;
   color: var(--text) !important;
-  border-radius: 9999px;
+  border-radius: 9999px;           /* bentuk kolom bulat modern */
+  height: 54px;
+  padding: 0 20px;
+  font-size: 1.05rem;
 }
 
+.send-message input:focus,
+.my-input-text:focus {
+  border-color: var(--primary) !important;
+  outline: none;
+}
+
+/* Tombol Send (panah) */
 .send-message button {
-  background: var(--primary);
-  color: #000;
+  background: var(--primary) !important;
+  color: #000 !important;
   border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Placeholder */
+.my-input-text::placeholder {
+  color: #888 !important;
 }
 
 /* Modal */
@@ -101,5 +117,4 @@ dialog {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 12px;
 }
