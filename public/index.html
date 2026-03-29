@@ -5,21 +5,27 @@
     <title>READTalk - State</title>
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#ff0000" />
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/skeleton.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/ico" href="favicon.ico" />
-    
+
     <script>
+        // ============================================================
+        // URL PARAMETER HANDLER (dari OpenAuth)
+        // ============================================================
         const urlParams = new URLSearchParams(window.location.search);
         const userId = urlParams.get('userId') || '';
         const email = urlParams.get('email') || '';
         
         if (userId) localStorage.setItem('readtalk_user_id', userId);
         if (email) localStorage.setItem('readtalk_email', email);
-                    
+        
+        // Banner verifikasi (sementara)
         if (userId || email) {
             document.write(`
                 <div style="background:#ff0000; color:white; padding:10px; text-align:center; margin-bottom:10px;">
@@ -32,30 +38,51 @@
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     </script>
-    
+
     <script src="/dist/index.js" type="module"></script>
 </head>
 <body>
-    <div class="container" style="width: 95%; height: 100%">
-        <!-- KOLOM PENCARIAN -->
-        <div class="row" style="margin-bottom: 1rem;">
-            <div class="twelve columns">
-                <input type="text" id="searchInput" placeholder="Cari user berdasarkan nama atau @username..." style="width: 100%;" />
-                <div id="searchResults" style="margin-top: 0.5rem;"></div>
+    <!-- HEADER - READTalk -->
+    <header id="app-header">
+        <button id="back-button" style="display: none;">✖️</button>
+        <div id="header-title">READTalk</div>
+        <div id="header-menu">
+            <button id="menu-button">⋮</button>
+            <div id="menu-dropdown">
+                <div class="menu-item" id="theme-toggle">
+                    <span>🌓</span>
+                    <span>Day/Night Mode</span>
+                </div>
+                <div class="menu-item" id="show-settings">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                </div>
             </div>
         </div>
-        
-        <div class="row" style="height: calc(100% - 80px);">
-            <div class="one-third column" style="margin-top: 2%;">
-                <h4><b>READT</b>alk</h4>
-                <button id="menuButton" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0;">
-                    •••
-                </button>
-            </div>
-            <div class="two-thirds column" id="root" style="height: 100%; overflow-y: auto;"></div>
+    </header>
+
+    <!-- MAIN CONTAINER (ROSTER + CHATLOG) -->
+    <div id="main-container">
+        <!-- ROSTER (LEFT) -->
+        <div id="roster">
+            <div class="roster-header">Participants • <span id="participant-count">0</span> online</div>
+            <div id="roster-list"></div>
+        </div>
+
+        <!-- CHATLOG (RIGHT) -->
+        <div id="chatlog">
+            <div id="messages"></div>
+            <div id="root" style="display: none;"></div>
         </div>
     </div>
-    
+
+    <!-- CHAT INPUT -->
+    <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Type a message..." />
+        <button id="send-button">➤</button>
+    </div>
+
+    <!-- MODAL SETTINGS -->
     <dialog id="settingsModal">
         <article>
             <header>
@@ -94,54 +121,80 @@
             </footer>
         </article>
     </dialog>
-    
+
     <script>
-        // DOM elements
-        const menuButton = document.getElementById('menuButton');
+        // ============================================================
+        // UI INTERACTION (menu, modal, theme, dll)
+        // ============================================================
+        const menuButton = document.getElementById('menu-button');
+        const menuDropdown = document.getElementById('menu-dropdown');
+        const themeToggle = document.getElementById('theme-toggle');
+        const showSettings = document.getElementById('show-settings');
         const settingsModal = document.getElementById('settingsModal');
         const closeModalButton = document.getElementById('closeModalButton');
         const cancelModalButton = document.getElementById('cancelModalButton');
         const saveSettingsButton = document.getElementById('saveSettingsButton');
-        const displayNameInput = document.getElementById('displayNameInput');
-        const usernameInput = document.getElementById('usernameInput');
-        const emailInput = document.getElementById('emailInput');
-        const userIdInput = document.getElementById('userIdInput');
-        const usernameHelp = document.getElementById('usernameHelp');
-        const deleteAccountButton = document.getElementById('deleteAccountButton');
-        const searchInput = document.getElementById('searchInput');
-        const searchResultsDiv = document.getElementById('searchResults');
-        
-        // Load user data into modal
-        function loadUserDataToModal() {
+        const backButton = document.getElementById('back-button');
+        const headerTitle = document.getElementById('header-title');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const roster = document.getElementById('roster');
+        const chatlog = document.getElementById('chatlog');
+
+        // Dark mode
+        let isDarkMode = localStorage.getItem('dark_mode') === 'true';
+        if (isDarkMode) document.body.classList.add('dark-mode');
+
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('dark_mode', isDarkMode);
+            menuDropdown.classList.remove('show');
+        });
+
+        // Menu dropdown
+        menuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', () => menuDropdown.classList.remove('show'));
+
+        // Settings modal
+        showSettings.addEventListener('click', () => {
             const displayName = localStorage.getItem('readtalk_displayName') || '';
             const username = localStorage.getItem('readtalk_username') || '';
             const email = localStorage.getItem('readtalk_email') || '';
             const userId = localStorage.getItem('readtalk_user_id') || '';
             const lastUsernameChange = parseInt(localStorage.getItem('readtalk_lastUsernameChange') || '0');
-            
-            displayNameInput.value = displayName;
-            usernameInput.value = username;
-            emailInput.value = email;
-            userIdInput.value = userId;
-            
+
+            document.getElementById('displayNameInput').value = displayName;
+            document.getElementById('usernameInput').value = username;
+            document.getElementById('emailInput').value = email;
+            document.getElementById('userIdInput').value = userId;
+
+            const usernameHelp = document.getElementById('usernameHelp');
             if (lastUsernameChange) {
                 const daysSince = (Date.now() - lastUsernameChange) / (1000 * 60 * 60 * 24);
                 const daysLeft = Math.max(0, 60 - Math.floor(daysSince));
                 if (daysLeft > 0) {
                     usernameHelp.textContent = `Username dapat diganti setiap 60 hari. ${daysLeft} hari lagi.`;
-                    usernameInput.disabled = true;
+                    document.getElementById('usernameInput').disabled = true;
                 } else {
                     usernameHelp.textContent = `Username unik untuk pencarian. Bisa diganti sekarang.`;
-                    usernameInput.disabled = false;
+                    document.getElementById('usernameInput').disabled = false;
                 }
             }
-        }
-        
-        // Save settings
-        function saveSettings() {
-            const newDisplayName = displayNameInput.value.trim();
-            const newUsername = usernameInput.value.trim();
-            
+
+            settingsModal.showModal();
+            menuDropdown.classList.remove('show');
+        });
+
+        closeModalButton.addEventListener('click', () => settingsModal.close());
+        cancelModalButton.addEventListener('click', () => settingsModal.close());
+        saveSettingsButton.addEventListener('click', () => {
+            const newDisplayName = document.getElementById('displayNameInput').value.trim();
+            const newUsername = document.getElementById('usernameInput').value.trim();
+
             const updates = {};
             if (newDisplayName && newDisplayName !== localStorage.getItem('readtalk_displayName')) {
                 updates.displayName = newDisplayName;
@@ -153,53 +206,99 @@
                 }
                 updates.username = newUsername;
             }
-            
+
             if (Object.keys(updates).length > 0) {
                 window.dispatchEvent(new CustomEvent('saveSettings', { detail: updates }));
             }
-            
             settingsModal.close();
+        });
+
+        document.getElementById('deleteAccountButton').addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                localStorage.clear();
+                window.location.href = '/';
+            }
+        });
+
+        // Smartphone back button
+        backButton.addEventListener('click', () => {
+            if (window.innerWidth <= 600) {
+                document.body.classList.remove('chat-active');
+                headerTitle.textContent = 'READTalk';
+                chatInput.blur();
+            }
+        });
+
+        // Roster click (smartphone)
+        function setupRosterClick() {
+            document.querySelectorAll('.roster-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 600) {
+                        const name = item.querySelector('.roster-name')?.textContent || '';
+                        document.body.classList.add('chat-active');
+                        headerTitle.textContent = `Chat with ${name}`;
+                        setTimeout(() => chatInput.focus(), 300);
+                    }
+                });
+            });
         }
-        
-        // Search handler
+
+        // Observer untuk roster items
+        const rosterList = document.getElementById('roster-list');
+        const observer = new MutationObserver(() => setupRosterClick());
+        observer.observe(rosterList, { childList: true, subtree: true });
+
+        // Send message handler (terhubung ke React via custom event)
+        sendButton.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message) {
+                window.dispatchEvent(new CustomEvent('sendMessage', { detail: { message } }));
+                chatInput.value = '';
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendButton.click();
+            }
+        });
+
+        // Search handler (terhubung ke React)
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.id = 'searchInput';
+        searchInput.placeholder = 'Cari user berdasarkan nama atau @username...';
+        searchInput.style.width = '100%';
+        searchInput.style.marginBottom = '1rem';
+        const searchResultsDiv = document.createElement('div');
+        searchResultsDiv.id = 'searchResults';
+
+        // Sisipkan di atas main-container
+        const mainContainer = document.getElementById('main-container');
+        mainContainer.parentNode.insertBefore(searchInput, mainContainer);
+        mainContainer.parentNode.insertBefore(searchResultsDiv, mainContainer);
+
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value;
             window.dispatchEvent(new CustomEvent('search', { detail: { query } }));
         });
-        
-        // Listen for search results from React
+
         window.addEventListener('searchResults', (e) => {
             const results = e.detail.results;
             if (!results || results.length === 0) {
-                searchResultsDiv.innerHTML = '<p style="color: var(--pico-muted-color);">No users found</p>';
+                searchResultsDiv.innerHTML = '<p>No users found</p>';
             } else {
                 searchResultsDiv.innerHTML = results.map(user => `
-                    <div style="padding: 0.5rem; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <strong>${user.displayName}</strong> <span style="color: #666;">@${user.username}</span>
+                            <strong>${user.displayName}</strong> <span style="color: var(--text-secondary);">@${user.username}</span>
                         </div>
                         <button onclick="window.dispatchEvent(new CustomEvent('startChat', { detail: { userId: '${user.userId}' } }))" style="width: auto; margin: 0; padding: 0.25rem 0.75rem;">
                             Chat
                         </button>
                     </div>
                 `).join('');
-            }
-        });
-        
-        // Modal event listeners
-        menuButton.addEventListener('click', () => {
-            loadUserDataToModal();
-            settingsModal.showModal();
-        });
-        
-        closeModalButton.addEventListener('click', () => settingsModal.close());
-        cancelModalButton.addEventListener('click', () => settingsModal.close());
-        saveSettingsButton.addEventListener('click', saveSettings);
-        
-        deleteAccountButton.addEventListener('click', () => {
-            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                localStorage.clear();
-                window.location.href = '/';
             }
         });
     </script>
