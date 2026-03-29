@@ -1,7 +1,6 @@
 /* =============================================
-   READTalk - Modern Dark UI (Clean + Professional)
-   Compatible dengan normalize.css + skeleton.css
-   Hanya override & tambahan
+   READTalk - Modern Dark UI (Safe Version)
+   Hanya override, tidak mengganggu posisi input React
    ============================================= */
 
 :root {
@@ -14,10 +13,9 @@
   --bubble-me: #00f5ff;
   --bubble-other: #252525;
   --border: #333333;
-  --accent: #00d4ff;
 }
 
-/* Base Dark Mode */
+/* Base */
 html, body {
   height: 100%;
   margin: 0;
@@ -31,8 +29,8 @@ html, body {
 /* Container utama */
 .container {
   width: 95% !important;
+  height: 100vh !important;
   max-width: 1200px;
-  height: 100vh;
   padding: 0;
   background: var(--bg);
 }
@@ -40,7 +38,7 @@ html, body {
 /* Header Brand */
 h4 {
   margin: 0;
-  font-size: 1.85rem;
+  font-size: 1.9rem;
   font-weight: 700;
   letter-spacing: -0.8px;
 }
@@ -52,21 +50,20 @@ h4 b {
 /* Menu Button */
 #menuButton {
   color: var(--text);
-  font-size: 1.6rem;
-  padding: 4px 10px;
+  font-size: 1.65rem;
 }
 
 /* Search Input */
 #searchInput {
   width: 100% !important;
-  height: 48px;
+  height: 50px;
   padding: 0 18px;
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 12px;
   color: var(--text);
-  font-size: 1.02rem;
-  box-sizing: border-box;
+  font-size: 1.03rem;
+  margin-bottom: 12px;
 }
 
 #searchInput:focus {
@@ -78,14 +75,15 @@ h4 b {
 /* Search Results */
 #searchResults {
   background: var(--surface2);
-  border-radius: 8px;
   border: 1px solid var(--border);
-  max-height: 220px;
+  border-radius: 8px;
+  max-height: 210px;
   overflow-y: auto;
+  margin-bottom: 15px;
 }
 
 #searchResults > div {
-  padding: 10px 14px;
+  padding: 11px 14px;
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
@@ -96,30 +94,29 @@ h4 b {
   border-bottom: none;
 }
 
-/* Chat List (Roster) */
+/* Chat List */
 .roster-header {
   color: var(--text-secondary) !important;
   font-size: 0.9rem;
-  margin-bottom: 10px;
+  margin: 10px 0 8px;
 }
 
 /* Panel Kanan - Chat Area (#root) */
 #root {
   background: var(--bg);
   border-left: 1px solid var(--border);
-  padding: 15px 20px 80px !important;   /* ruang buat input dari React */
-  overflow-y: auto;
+  padding: 20px 20px 100px !important;   /* ruang bawah lebih besar biar input React tidak tertutup */
   height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* Message Bubbles (untuk React component) */
+/* Message Bubbles */
 .message {
   max-width: 78%;
-  margin-bottom: 12px;
-  position: relative;
+  margin-bottom: 14px;
 }
 
 .message.me {
@@ -133,7 +130,7 @@ h4 b {
 .message .bubble {
   padding: 13px 18px;
   border-radius: 20px;
-  line-height: 1.5;
+  line-height: 1.48;
   font-size: 1.04rem;
   word-wrap: break-word;
 }
@@ -151,7 +148,7 @@ h4 b {
 }
 
 .message .user {
-  font-size: 0.82rem;
+  font-size: 0.83rem;
   color: var(--text-secondary);
   margin-bottom: 5px;
   padding: 0 6px;
@@ -161,15 +158,20 @@ h4 b {
   text-align: right;
 }
 
-/* Empty State di #root */
-#root p, #root div:empty::after {
+/* Empty State */
+#root:empty::after,
+#root p {
   color: var(--text-secondary);
   text-align: center;
-  padding: 120px 30px;
-  font-size: 1.1rem;
+  padding: 100px 30px;
+  font-size: 1.15rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Modal Settings */
+/* Modal */
 dialog {
   background: var(--surface);
   color: var(--text);
@@ -181,11 +183,7 @@ dialog article {
   background: transparent;
 }
 
-dialog header, dialog footer {
-  background: var(--surface2);
-}
-
-/* Responsive Fix untuk Mobile */
+/* Responsive Mobile */
 @media (max-width: 550px) {
   .one-third.column, .two-thirds.column {
     width: 100% !important;
@@ -199,6 +197,6 @@ dialog header, dialog footer {
   #root {
     border-left: none;
     border-top: 1px solid var(--border);
-    padding: 15px 15px 90px;
+    padding-bottom: 110px !important;
   }
 }
