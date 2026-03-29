@@ -1,51 +1,204 @@
-body,
-html {
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-direction: column;
+/* =============================================
+   READTalk - Modern Dark UI (Clean + Professional)
+   Compatible dengan normalize.css + skeleton.css
+   Hanya override & tambahan
+   ============================================= */
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #1a1a1a;
+  --text: #eeeeee;
+  --text-secondary: #aaaaaa;
+  --primary: #00f5ff;
+  --bubble-me: #00f5ff;
+  --bubble-other: #252525;
+  --border: #333333;
+  --accent: #00d4ff;
 }
 
-.chat {
-	padding-top: 40px;
+/* Base Dark Mode */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow: hidden;
 }
 
+/* Container utama */
+.container {
+  width: 95% !important;
+  max-width: 1200px;
+  height: 100vh;
+  padding: 0;
+  background: var(--bg);
+}
+
+/* Header Brand */
+h4 {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+}
+
+h4 b {
+  color: var(--primary);
+}
+
+/* Menu Button */
+#menuButton {
+  color: var(--text);
+  font-size: 1.6rem;
+  padding: 4px 10px;
+}
+
+/* Search Input */
+#searchInput {
+  width: 100% !important;
+  height: 48px;
+  padding: 0 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 1.02rem;
+  box-sizing: border-box;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.15);
+}
+
+/* Search Results */
+#searchResults {
+  background: var(--surface2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#searchResults > div {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#searchResults > div:last-child {
+  border-bottom: none;
+}
+
+/* Chat List (Roster) */
+.roster-header {
+  color: var(--text-secondary) !important;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+/* Panel Kanan - Chat Area (#root) */
 #root {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
-	overflow-y: auto;
-	height: 100%;
-	/* padding: 10px; */
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  padding: 15px 20px 80px !important;   /* ruang buat input dari React */
+  overflow-y: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
+/* Message Bubbles (untuk React component) */
 .message {
-	margin-bottom: 10px;
+  max-width: 78%;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.message.me {
+  align-self: flex-end;
+}
+
+.message.other {
+  align-self: flex-start;
+}
+
+.message .bubble {
+  padding: 13px 18px;
+  border-radius: 20px;
+  line-height: 1.5;
+  font-size: 1.04rem;
+  word-wrap: break-word;
+}
+
+.message.me .bubble {
+  background: var(--bubble-me);
+  color: #000;
+  border-bottom-right-radius: 6px;
+}
+
+.message.other .bubble {
+  background: var(--bubble-other);
+  color: var(--text);
+  border-bottom-left-radius: 6px;
 }
 
 .message .user {
-	font-weight: bold;
-	text-align: right;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  padding: 0 6px;
 }
 
-.message .remove {
-	position: absolute;
-	width: 22px;
-	height: 20px;
-	left: -60px;
-	/* display: "block", */
-	display: none;
-	padding: 0;
-	line-height: 18px;
-	border: "none";
+.message.me .user {
+  text-align: right;
 }
 
-.send-message {
-	padding: 0;
+/* Empty State di #root */
+#root p, #root div:empty::after {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 120px 30px;
+  font-size: 1.1rem;
 }
 
-.my-input-text::placeholder {
-	color: #ccc;
+/* Modal Settings */
+dialog {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+dialog article {
+  background: transparent;
+}
+
+dialog header, dialog footer {
+  background: var(--surface2);
+}
+
+/* Responsive Fix untuk Mobile */
+@media (max-width: 550px) {
+  .one-third.column, .two-thirds.column {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  
+  .row {
+    flex-direction: column;
+  }
+  
+  #root {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding: 15px 15px 90px;
+  }
 }
