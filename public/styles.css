@@ -1,45 +1,44 @@
-/* READTalk - Minimal Dark Mode (Aman untuk layout loe) */
+/* READTalk - Dark Mode Minimal & Aman */
+/* Hanya warna & tampilan, tidak mengubah posisi apapun */
 
 :root {
   --bg: #0a0a0a;
   --surface: #121212;
   --surface2: #1f1f1f;
-  --text: #e8e8e8;
-  --text-secondary: #999999;
+  --text: #eeeeee;
+  --text-secondary: #aaaaaa;
   --primary: #00f5ff;
   --bubble-me: #00f5ff;
   --bubble-other: #2a2a2a;
   --border: #333333;
 }
 
-/* Hanya warna dasar */
+/* Warna dasar */
 html, body {
   background: var(--bg);
   color: var(--text);
 }
 
-/* Brand */
+/* Brand READTalk */
 h4 {
-  font-size: 1.9rem;
+  font-size: 1.95rem;
   font-weight: 700;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.7px;
 }
 h4 b {
   color: var(--primary);
 }
 
-/* Search Box */
+/* Search Input */
 #searchInput {
   background: var(--surface2) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 10px;
   color: var(--text) !important;
-  height: 48px;
+  border-radius: 10px;
 }
 
 #searchInput:focus {
   border-color: var(--primary) !important;
-  box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.2);
 }
 
 /* Search Results */
@@ -49,39 +48,36 @@ h4 b {
   border-radius: 8px;
 }
 
-/* Chat Area (#root) */
+/* Chat Area */
 #root {
   background: var(--bg);
   border-left: 1px solid var(--border);
 }
 
-/* Message Bubbles */
+/* Bubble Chat */
 .message .bubble {
   padding: 12px 17px;
   border-radius: 18px;
   line-height: 1.5;
-  font-size: 1.03rem;
 }
 
 .message.me .bubble {
   background: var(--bubble-me);
   color: #000;
-  border-bottom-right-radius: 5px;
 }
 
 .message.other .bubble {
   background: var(--bubble-other);
   color: var(--text);
-  border-bottom-left-radius: 5px;
 }
 
+/* Nama user di chat */
 .message .user {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  margin-bottom: 4px;
 }
 
-/* Input dari React (hanya warna, tidak ubah posisi) */
+/* Input Chat dari React (hanya warna) */
 .send-message {
   background: var(--surface);
   border-top: 1px solid var(--border);
@@ -94,20 +90,10 @@ h4 b {
   border-radius: 9999px;
 }
 
-.send-message input:focus {
-  border-color: var(--primary) !important;
-}
-
 .send-message button {
   background: var(--primary);
   color: #000;
   border-radius: 50%;
-  font-size: 1.7rem;
-}
-
-/* Placeholder */
-.my-input-text::placeholder {
-  color: #888 !important;
 }
 
 /* Modal */
@@ -115,12 +101,5 @@ dialog {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-}
-
-/* Responsive kecil */
-@media (max-width: 550px) {
-  #root {
-    border-left: none;
-    border-top: 1px solid var(--border);
-  }
+  border-radius: 12px;
 }
