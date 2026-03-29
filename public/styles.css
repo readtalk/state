@@ -1,62 +1,45 @@
-/* =============================================
-   READTalk - Modern Dark UI 
-   Hanya tambahan & override (Tidak mengubah posisi flex)
-   ============================================= */
+/* READTalk - Minimal Dark Mode (Aman untuk layout loe) */
 
 :root {
   --bg: #0a0a0a;
-  --surface: #111111;
-  --surface2: #1a1a1a;
-  --text: #eeeeee;
-  --text-secondary: #aaaaaa;
+  --surface: #121212;
+  --surface2: #1f1f1f;
+  --text: #e8e8e8;
+  --text-secondary: #999999;
   --primary: #00f5ff;
   --bubble-me: #00f5ff;
-  --bubble-other: #252525;
+  --bubble-other: #2a2a2a;
   --border: #333333;
 }
 
-/* Base - Hanya tambahan warna */
+/* Hanya warna dasar */
 html, body {
   background: var(--bg);
   color: var(--text);
 }
 
-/* Header & Brand */
+/* Brand */
 h4 {
-  margin: 0;
-  font-size: 1.95rem;
+  font-size: 1.9rem;
   font-weight: 700;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.6px;
 }
-
 h4 b {
   color: var(--primary);
 }
 
-/* Menu Button */
-#menuButton {
-  color: var(--text);
-  font-size: 1.7rem;
-  padding: 4px 10px;
-}
-
-/* Search Input */
+/* Search Box */
 #searchInput {
-  width: 100% !important;
-  height: 50px;
-  padding: 0 18px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  color: var(--text);
-  font-size: 1.03rem;
-  margin-bottom: 12px;
+  background: var(--surface2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px;
+  color: var(--text) !important;
+  height: 48px;
 }
 
 #searchInput:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.15);
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.2);
 }
 
 /* Search Results */
@@ -64,159 +47,80 @@ h4 b {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  max-height: 220px;
-  overflow-y: auto;
-  margin-bottom: 15px;
 }
 
-#searchResults > div {
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#searchResults > div:last-child {
-  border-bottom: none;
-}
-
-/* Chat List Header */
-.roster-header {
-  color: var(--text-secondary) !important;
-  font-size: 0.9rem;
-  margin: 10px 0 8px;
-}
-
-/* Panel Chat (#root) - Hanya tambahan padding & warna */
+/* Chat Area (#root) */
 #root {
   background: var(--bg);
   border-left: 1px solid var(--border);
-  padding: 20px 20px 90px !important;   /* ruang bawah lebih besar */
-  gap: 14px;
 }
 
 /* Message Bubbles */
-.message {
-  max-width: 78%;
-  margin-bottom: 14px;
-  position: relative;
-}
-
-.message.me {
-  align-self: flex-end;
-}
-
-.message.other {
-  align-self: flex-start;
-}
-
 .message .bubble {
-  padding: 13px 18px;
-  border-radius: 20px;
-  line-height: 1.48;
-  font-size: 1.05rem;
-  word-wrap: break-word;
+  padding: 12px 17px;
+  border-radius: 18px;
+  line-height: 1.5;
+  font-size: 1.03rem;
 }
 
 .message.me .bubble {
   background: var(--bubble-me);
   color: #000;
-  border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 5px;
 }
 
 .message.other .bubble {
   background: var(--bubble-other);
   color: var(--text);
-  border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 5px;
 }
 
 .message .user {
-  font-size: 0.83rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  margin-bottom: 5px;
-  padding: 0 6px;
+  margin-bottom: 4px;
 }
 
-.message.me .user {
-  text-align: right;
-}
-
-/* Empty State */
-#root:empty::after,
-#root p {
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 100px 30px;
-  font-size: 1.15rem;
-}
-
-/* Input Area (dari React) - Hanya override warna & style */
+/* Input dari React (hanya warna, tidak ubah posisi) */
 .send-message {
   background: var(--surface);
   border-top: 1px solid var(--border);
-  padding: 14px 20px 20px;
 }
 
 .send-message input {
-  background: var(--surface2);
-  border: 1px solid var(--border);
+  background: var(--surface2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
   border-radius: 9999px;
-  color: var(--text);
-  height: 54px;
-  padding: 0 22px;
-  font-size: 1.05rem;
 }
 
 .send-message input:focus {
-  outline: none;
-  border-color: var(--primary);
+  border-color: var(--primary) !important;
 }
 
 .send-message button {
-  width: 54px;
-  height: 54px;
   background: var(--primary);
   color: #000;
-  border: none;
   border-radius: 50%;
-  font-size: 1.85rem;        /* Panah besar */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.send-message button:hover {
-  background: #00e0e8;
+  font-size: 1.7rem;
 }
 
 /* Placeholder */
 .my-input-text::placeholder {
-  color: #888;
+  color: #888 !important;
 }
 
-/* Modal Settings */
+/* Modal */
 dialog {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 12px;
 }
 
-/* Responsive */
+/* Responsive kecil */
 @media (max-width: 550px) {
-  .one-third.column, .two-thirds.column {
-    width: 100% !important;
-    margin-left: 0 !important;
-  }
-  
-  .row {
-    flex-direction: column;
-  }
-  
   #root {
     border-left: none;
     border-top: 1px solid var(--border);
-    padding-bottom: 110px !important;
   }
 }
