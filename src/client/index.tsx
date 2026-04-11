@@ -198,7 +198,7 @@ function App() {
 	}
 
 	const isInputEmpty = inputValue.trim() === "";
-	const sendButtonIcon = isInputEmpty ? "●" : "➤";
+	const sendButtonIcon = isInputEmpty ? "⦿" : "➤";
 
 	return (
 		<div className="chat container">
